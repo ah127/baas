@@ -47,18 +47,17 @@ exports.getCart = (userId) => {
     .catch(err => console.log(err));
 }
 
-exports.addToCart = (userId, prodId) => {
+exports.addToCart = (userId, prodId, numberOfNights) => {
   const db = getDb();
   return this.findById(userId)
     .then(userData => {
-      let newQuantity = 1;
+      let newQuantity = numberOfNights;
       let updatedCartItems = userData.cart.items;
       const cartProductIndex = updatedCartItems.findIndex(cp => {
         return cp.productId.toString() === prodId.toString();
       });
 
       if (cartProductIndex >= 0) {
-        newQuantity = updatedCartItems[cartProductIndex].quantity + 1;
         updatedCartItems[cartProductIndex].quantity = newQuantity;
       } else {
         updatedCartItems.push({

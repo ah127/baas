@@ -1,7 +1,7 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
-const stripe = require('stripe')('sk_test_JJkIST3Bpy1E7p0G4JtAfRKC');
+const stripe = require('stripe')('sk_test_51H2XT0EKb6anIrL5a5vjdvBv6uZl0ouESJ9i5lto0zKtUeA14IhwqJoX4bi6iljb8Y7IfCHsfiFpoeh0Z11H7lAk00tNVElQ1W');
 
 const productModel = require('../models/product');
 const userModel = require('../models/user');
@@ -100,7 +100,8 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
-  userModel.addToCart(req.session.user._id, prodId)
+  const numberOfNights = req.body.nights;
+  userModel.addToCart(req.session.user._id, prodId, numberOfNights)
     .then(result => {
       res.redirect('/cart');
     })

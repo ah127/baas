@@ -25,7 +25,7 @@
     "multer": "^1.4.2",
     "nodemailer": "^6.4.6",
     "pdfkit": "^0.11.0",
-    "stripe": "^8.64.0"
+    "stripe": "^8.69.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

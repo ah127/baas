@@ -17,10 +17,10 @@
                 <h2>Total :<%= totalSum %> </h2>
             </div>
             <div class="centered">
-                <button id="order-btn" class="btn">ORDER</button>
+                <button id="order-btn" class="btn">CONFORM BOOKING</button>
                 <script src="https://js.stripe.com/v3/"></script>
                 <script>
-                    var stripe = Stripe('pk_test_1CY3fMEiNwIbq9Gx0xMTPzUF');
+                    var stripe = Stripe('pk_test_51H2XT0EKb6anIrL5k3pT3ni8RSEDDdAevfraW704A49XAc4MSF6X47svlZ5n7zw1Yl9BCPP9P61iDK3pyzOlm1hP00GoHA79QH');
                     var orderBtn = document.getElementById('order-btn');
                     orderBtn.addEventListener('click', function() {
                         stripe.redirectToCheckout({
