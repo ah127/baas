@@ -1,0 +1,16 @@
+<form class="product-form" action="/cart" method="post">
+    <div class="form-control">
+        <label for="nights">No. of nights</label>
+        <input
+        type="number"  
+        name="nights" 
+        id="nights" 
+        step="1" 
+        >
+    </div>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="form-control">
+        <button class="btn" type="submit">Add to Cart</button>
+    </div>
+    <input type="hidden" name="productId" value="<%= product._id %>">
+</form>
