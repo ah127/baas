@@ -36,7 +36,7 @@ exports.getSignup = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
-    const intialCart = { items: {} };
+    const intialCart = { items: [] };
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
