@@ -1,4 +1,6 @@
 const path = require('path');
+const fs = require('fs');
+const https = require('https');
 
 const express = require('express');
 const session = require('express-session');
@@ -16,6 +18,9 @@ const store = new MongoDBStore({
   collection: 'sessions'
 });
 const csrfProtection = csrf();
+
+const privateKey = fs.readFileSync('server.key');
+const certificate = fs.readFileSync('server.cert');
 
 const fileStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -62,6 +67,7 @@ app.use(csrfProtection);
 app.use(flash());
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.isHotelOwner = req.session.isHotelOwner;
   res.locals.csrfToken = req.csrfToken();
   next();
 })
@@ -79,5 +85,5 @@ app.use((error, req, res, next) => {
 })
 
 mongoConnect(() => {
-  app.listen(3000);
+  https.createServer({ key: privateKey, cert: certificate }, app).listen(3000);
 });

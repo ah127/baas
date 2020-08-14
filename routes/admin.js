@@ -8,10 +8,10 @@ const isAuth = require('../middleware/is-auth');
 const router = express.Router();
 
 // /admin/add-product => GET
-router.get('/add-product', isAuth, adminController.getAddProduct);
+router.get('/add-product', isAuth.isLoggedIn, isAuth.canAccessHotelAdmin, adminController.getAddProduct);
 
 // /admin/products => GET
-router.get('/products', isAuth, adminController.getProducts);
+router.get('/products', isAuth.isLoggedIn, isAuth.canAccessHotelAdmin, adminController.getProducts);
 
 // /admin/add-product => POST
 router.post('/add-product',
@@ -25,10 +25,10 @@ router.post('/add-product',
             .isLength({ min: 5, max: 400 })
             .trim()
     ],
-    isAuth,
+    isAuth.isLoggedIn,
     adminController.postAddProduct);
 
-router.get('/edit-product/:productId', isAuth, adminController.getEditProduct);
+router.get('/edit-product/:productId', isAuth.isLoggedIn, isAuth.canAccessHotelAdmin, adminController.getEditProduct);
 
 router.post('/edit-product', [
     body('title')
@@ -39,8 +39,8 @@ router.post('/edit-product', [
     body('description')
         .isLength({ min: 5, max: 400 })
         .trim()
-], isAuth, adminController.postEditProduct);
+], isAuth.isLoggedIn, isAuth.canAccessHotelAdmin, adminController.postEditProduct);
 
-router.delete('/product/:productId', isAuth, adminController.deleteProduct);
+router.delete('/product/:productId', isAuth.isLoggedIn, isAuth.canAccessHotelAdmin, adminController.deleteProduct);
 
 module.exports = router;

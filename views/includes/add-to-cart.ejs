@@ -1,13 +1,20 @@
 <form class="product-form" action="/cart" method="post">
-    <div class="form-control">
-        <label for="nights">No. of nights</label>
+    <div class="form-control calendar">
+        <label for="checkin">Check In Date</label>
         <input
-        type="number"  
-        name="nights" 
-        id="nights" 
-        step="1" 
+        type="date"  
+        name="checkin" 
+        id="checkin" 
         >
     </div>
+
+    <div class="form-control calendar">
+        <label for="checkout">Check Out Date</label>
+        <input
+        type="date"  
+        name="checkout" 
+        id="checkout" 
+        >
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <div class="form-control">
         <button class="btn" type="submit">Add to Cart</button>

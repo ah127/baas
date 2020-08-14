@@ -1,14 +1,18 @@
 const mongodb = require('mongodb');
 const getDb = require('../util/database').getDb;
 
-exports.save = (title, imageUrl, price, description, userId) => {
+exports.save = (title, imageUrl, price, description, userId, latitude, longitude) => {
   const db = getDb();
   return db.collection('products').insertOne({
     title: title,
     imageUrl: imageUrl,
     price: price,
     description: description,
-    userId: userId
+    userId: userId,
+    location: {
+      type: "Point",
+      coordinates: [longitude, latitude]
+    }
   });
 }
 
@@ -49,6 +53,26 @@ exports.fetchAll = (page, ITEMS_PER_PAGE) => {
   return db
     .collection('products')
     .find()
+    .skip((page - 1) * ITEMS_PER_PAGE)
+    .limit(ITEMS_PER_PAGE)
+    .toArray();
+}
+
+exports.fetchAllLocationProducts = (page, ITEMS_PER_PAGE) => {
+  const db = getDb();
+  return db
+    .collection('products')
+    .find({
+      "location": {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [85.3188693523407, 27.706241838165116]
+          },
+          $maxDistance: 10000
+        }
+      }
+    })
     .skip((page - 1) * ITEMS_PER_PAGE)
     .limit(ITEMS_PER_PAGE)
     .toArray();

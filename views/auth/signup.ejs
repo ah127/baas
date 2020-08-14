@@ -13,7 +13,7 @@
         <form class="login-form" action="/signup" method="POST" novalidate>
             <div class="form-control">
                 <div><%= validationErrors %> </div>
-                <label for="email">E-Mail</label>
+                <label for="email">E-Mail</åçlabel>
                 <input 
                 class= "<%= validationErrors.find(e => e.param === 'email') ? 'invalid' : ''%>" 
                 type="email" 
@@ -38,6 +38,13 @@
                 id="confirmPassword" 
                 value="<%= oldInput.confirmPassword %>">
             </div>
+
+            <div>
+                <input type="checkbox" id="isHotelOwner" name="isHotelOwner">
+                <label for="isHotelOwner">Signup as a Hotel Owner</label><br>
+            </div>
+            
+            <br>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="btn" type="submit">Sign up</button>
         </form>

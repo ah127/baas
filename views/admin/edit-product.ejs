@@ -1,6 +1,13 @@
 <%- include('../includes/head.ejs') %>
     <link rel="stylesheet" href="/css/forms.css">
     <link rel="stylesheet" href="/css/product.css">
+    <style>
+        #map{
+            height:500px;
+            width: 600px;
+            margin: auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -43,6 +50,20 @@
                 <label for="description">Description of Hotel</label>
                 <textarea name="description" id="description" rows="5"><% if (editing || hasError) { %><%= product.description %><% } %></textarea>
             </div>
+
+            <h5>Hotel Location</h5>
+            <div class="form-control">
+                <label for="latitude">Latitude</label>
+                <input type="text" name="latitude" id="latitude">
+            </div>
+            <div class="form-control">
+                <label for="longitude">Longitude</label>
+                <input type="text" name="longitude" id="longitude">
+            </div>
+            
+
+            <div id="map"></div>
+            <br>
             <% if (editing) { %>
                 <input type="hidden" value="<%= product._id %>" name="productId">
             <% } %>
@@ -50,4 +71,35 @@
             <button class="btn" type="submit"><% if (editing) { %>Update Product<% } else { %>Add Product<% } %></button>
         </form>
     </main>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5PhsvkuboYGsd2mGiQxMyTfeqOrYYNm8&callback=initMap&libraries=&v=weekly"
+      defer
+    ></script>
+    <script>
+       function initMap() {
+        var myLatlng = {lat: 27.7058473, lng: 85.3176929};
+
+        var map = new google.maps.Map(
+            document.getElementById('map'), {zoom: 8, center: myLatlng});
+
+        // Create the initial InfoWindow.
+        var infoWindow = new google.maps.InfoWindow(
+            {content: 'Click the map to get Lat/Lng!', position: myLatlng});
+        infoWindow.open(map);
+
+        // Configure the click listener.
+        map.addListener('click', function(mapsMouseEvent) {
+          // Close the current InfoWindow.
+          infoWindow.close();
+
+          // Create a new InfoWindow.
+          infoWindow = new google.maps.InfoWindow({position: mapsMouseEvent.latLng});
+          document.getElementById('latitude').value = mapsMouseEvent.latLng.lat();
+          document.getElementById('longitude').value = mapsMouseEvent.latLng.lng();
+          infoWindow.setContent(mapsMouseEvent.latLng.toString());
+          infoWindow.open(map);
+        });
+      }
+    </script>
 <%- include('../includes/end.ejs') %>
