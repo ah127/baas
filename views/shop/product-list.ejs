@@ -28,16 +28,13 @@
                                 </div>
                                 <div class="card__actions">
                                     <a href="/products/<%= product._id %>" class="btn">Details</a>
-                                    <% if (isAuthenticated) { %>
-                                        <%- include('../includes/add-to-cart.ejs', {product: product}) %>                             
-                                    <% } %>
                                 </div>
                             </article>
                             <% } %>
                     </div>
                     <%- include('../includes/pagination.ejs', {currentPage: currentPage, hasNextPage: hasNextPage, hasPreviousPage: hasPreviousPage, nextPage: nextPage, previousPage: previousPage,lastPage: lastPage}) %>
                     <% } else { %>
-                        <h1>No Products Found!</h1>
+                        <h1>No Hotels Found!</h1>
                         <% } %>
             </main>
             <%- include('../includes/end.ejs') %>

@@ -36,6 +36,7 @@ exports.getSignup = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
+    const isHotelOwner = req.body.isHotelOwner ? true : false;
     const intialCart = { items: [] };
     const errors = validationResult(req);
 
@@ -61,7 +62,7 @@ exports.postSignup = (req, res, next) => {
             }
             bcrypt.hash(password, 12)
                 .then(hashedPassword => {
-                    userModel.signup(email, hashedPassword, intialCart)
+                    userModel.signup(email, hashedPassword, isHotelOwner, intialCart)
                         .then(result => {
                             res.redirect('/login');
                             const mailOptions = {
@@ -140,6 +141,9 @@ exports.postLogin = (req, res, next) => {
                     if (doMatch) {
                         req.session.user = user;
                         req.session.isLoggedIn = true;
+                        if (user.isHotelOwner) {
+                            req.session.isHotelOwner = true;
+                        }
                         return req.session.save(err => {
                             if (err) { console.log(err) };
                             res.redirect('/');

@@ -2,10 +2,10 @@ const bcrypt = require('bcrypt');
 const mongodb = require('mongodb');
 const getDb = require('../util/database').getDb;
 
-exports.signup = (email, hashedPassword, intialCart) => {
+exports.signup = (email, hashedPassword, isHotelOwner, intialCart) => {
   const db = getDb();
   return db.collection('users')
-    .insertOne({ email: email, password: hashedPassword, cart: intialCart });
+    .insertOne({ email: email, password: hashedPassword, isHotelOwner: isHotelOwner, cart: intialCart });
 }
 
 exports.findById = (userId) => {

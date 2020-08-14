@@ -19,6 +19,8 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const userId = req.session.user._id;
+  const latitude = parseFloat(req.body.latitude);
+  const longitude = parseFloat(req.body.longitude);
 
   const errors = validationResult(req);
 
@@ -31,7 +33,9 @@ exports.postAddProduct = (req, res, next) => {
       product: {
         title: title,
         price: price,
-        description: description
+        description: description,
+        latitude: latitude,
+        longitude: longitude
       },
       errorMessage: 'Attached file is not an image',
       validationErrors: []
@@ -48,7 +52,9 @@ exports.postAddProduct = (req, res, next) => {
         title: title,
         image: image,
         price: price,
-        description: description
+        description: description,
+        latitude: latitude,
+        longitude: longitude
       },
       errorMessage: errors.array()[0].msg,
       validationErrors: errors.array()
@@ -57,7 +63,7 @@ exports.postAddProduct = (req, res, next) => {
 
   const imageUrl = image.path;
 
-  productModel.save(title, imageUrl, price, description, userId)
+  productModel.save(title, imageUrl, price, description, userId, latitude, longitude)
     .then(result => {
       res.redirect('/admin/products');
     })

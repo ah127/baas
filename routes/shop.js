@@ -9,26 +9,26 @@ const router = express.Router();
 
 router.get('/', shopController.getIndex);
 
-router.get('/products', shopController.getProducts);
+router.get('/products', shopController.getProductsNearLocation);
 
 router.get('/products/:productId', shopController.getProduct);
 
-router.get('/cart', isAuth, shopController.getCart);
+router.get('/cart', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.getCart);
 
-router.post('/cart', isAuth, shopController.postCart);
+router.post('/cart', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.postCart);
 
-router.post('/cart-delete-item', isAuth, shopController.postCartDeleteProduct);
+router.post('/cart-delete-item', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.postCartDeleteProduct);
 
-router.get('/checkout', isAuth, shopController.getCheckout);
+router.get('/checkout', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.getCheckout);
 
-router.get('/checkout/success', isAuth, shopController.getCheckoutSuccess);
+router.get('/checkout/success', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.getCheckoutSuccess);
 
-router.get('/checkout/cancel', isAuth, shopController.getCheckout);
+router.get('/checkout/cancel', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.getCheckout);
 
-// router.post('/create-order', isAuth, shopController.postOrder);
+// router.post('/create-order', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.postOrder);
 
-router.get('/orders', isAuth, shopController.getOrders);
+router.get('/orders', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.getOrders);
 
-router.get('/orders/:orderId', isAuth, shopController.getInvoice);
+router.get('/orders/:orderId', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.getInvoice);
 
 module.exports = router;
