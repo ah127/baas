@@ -36,47 +36,34 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getProductsNearLocation = (req, res, next) => {
-  console.log('hello');
-  // function getLocation() {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(showPosition);
-  //   } else {
-  //     x.innerHTML = "Geolocation is not supported by this browser.";
-  //   }
-  // }
-
-  // function showPosition(position) {
-  //   console.log("Latitude: " + position.coords.latitude +
-  //     "<br>Longitude: " + position.coords.longitude);
-  // }
-
-  // getLocation();
-  // const page = +req.query.page || 1;
-  // const ITEMS_PER_PAGE = 2;
-  // let totalItems;
-  // productModel.countTotalProducts()
-  //   .then(numProducts => {
-  //     totalItems = numProducts;
-  //     return productModel.fetchAllLocationProducts(page, ITEMS_PER_PAGE);
-  //   })
-  //   .then(products => {
-  //     res.render('shop/product-list', {
-  //       prods: products,
-  //       pageTitle: 'All Products',
-  //       path: '/products',
-  //       currentPage: page,
-  //       hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-  //       hasPreviousPage: page > 1,
-  //       nextPage: page + 1,
-  //       previousPage: page - 1,
-  //       lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
-  //     });
-  //   })
-  //   .catch(err => {
-  //     const error = new Error(err);
-  //     error.httpStatusCode = 500;
-  //     return next(error);
-  //   });
+  const latitude = parseFloat(req.body.latitude);
+  const longitude = parseFloat(req.body.longitude);
+  const page = +req.query.page || 1;
+  const ITEMS_PER_PAGE = 2;
+  let totalItems;
+  productModel.countTotalProducts()
+    .then(numProducts => {
+      totalItems = numProducts;
+      return productModel.fetchAllLocationProducts(page, ITEMS_PER_PAGE, longitude, latitude);
+    })
+    .then(products => {
+      res.render('shop/product-list', {
+        prods: products,
+        pageTitle: 'All Products',
+        path: '/products',
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+      });
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 

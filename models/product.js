@@ -58,7 +58,7 @@ exports.fetchAll = (page, ITEMS_PER_PAGE) => {
     .toArray();
 }
 
-exports.fetchAllLocationProducts = (page, ITEMS_PER_PAGE) => {
+exports.fetchAllLocationProducts = (page, ITEMS_PER_PAGE, longitude, latitude) => {
   const db = getDb();
   return db
     .collection('products')
@@ -67,7 +67,7 @@ exports.fetchAllLocationProducts = (page, ITEMS_PER_PAGE) => {
         $near: {
           $geometry: {
             type: "Point",
-            coordinates: [85.3188693523407, 27.706241838165116]
+            coordinates: [longitude, latitude]
           },
           $maxDistance: 10000
         }
