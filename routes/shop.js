@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/', shopController.getIndex);
 
-router.get('/products', shopController.getProductsNearLocation);
+router.post('/products', shopController.getProductsNearLocation);
 
 router.get('/products/:productId', shopController.getProduct);
 
