@@ -53,15 +53,15 @@
 
             <h5>Hotel Location</h5>
             <div class="form-control">
-                <label for="latitude">Latitude</label>
-                <input type="text" name="latitude" id="latitude">
+                <label for="latitu">Latitude</label>
+                <input type="text" name="latitu" id="latitu">
             </div>
             <div class="form-control">
-                <label for="longitude">Longitude</label>
-                <input type="text" name="longitude" id="longitude">
+                <label for="longitu">Longitude</label>
+                <input type="text" name="longitu" id="longitu">
             </div>
             
-
+            <div id="oi">lol</div>
             <div id="map"></div>
             <br>
             <% if (editing) { %>
@@ -95,8 +95,9 @@
 
           // Create a new InfoWindow.
           infoWindow = new google.maps.InfoWindow({position: mapsMouseEvent.latLng});
-          document.getElementById('latitude').value = mapsMouseEvent.latLng.lat();
-          document.getElementById('longitude').value = mapsMouseEvent.latLng.lng();
+        //   console.log(mapsMouseEvent.latLng.lat());
+          document.getElementById('latitu').value = mapsMouseEvent.latLng.lat();
+          document.getElementById('longitu').value = mapsMouseEvent.latLng.lng();
           infoWindow.setContent(mapsMouseEvent.latLng.toString());
           infoWindow.open(map);
         });

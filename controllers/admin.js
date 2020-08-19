@@ -19,8 +19,8 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const userId = req.session.user._id;
-  const latitude = parseFloat(req.body.latitude);
-  const longitude = parseFloat(req.body.longitude);
+  const latitude = parseFloat(req.body.latitu);
+  const longitude = parseFloat(req.body.longitu);
 
   const errors = validationResult(req);
 

@@ -7,6 +7,12 @@ const productModel = require('../models/product');
 const userModel = require('../models/user');
 
 exports.getProducts = (req, res, next) => {
+  let b;
+  if (req.session.user == undefined) {
+    b = "";
+  } else {
+    b = req.session.user.baascoin;
+  }
   const page = +req.query.page || 1;
   const ITEMS_PER_PAGE = 2;
   let totalItems;
@@ -20,6 +26,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'All Products',
         path: '/products',
+        baascoin: b,
         currentPage: page,
         hasNextPage: ITEMS_PER_PAGE * page < totalItems,
         hasPreviousPage: page > 1,
@@ -36,12 +43,18 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getProductsNearLocation = (req, res, next) => {
+  let b;
+  if (req.session.user == undefined) {
+    b = "";
+  } else {
+    b = req.session.user.baascoin;
+  }
   const latitude = parseFloat(req.body.latitude);
   const longitude = parseFloat(req.body.longitude);
   const page = +req.query.page || 1;
   const ITEMS_PER_PAGE = 2;
   let totalItems;
-  productModel.countTotalProducts()
+  productModel.countTotalNearProducts(longitude, latitude)
     .then(numProducts => {
       totalItems = numProducts;
       return productModel.fetchAllLocationProducts(page, ITEMS_PER_PAGE, longitude, latitude);
@@ -51,6 +64,7 @@ exports.getProductsNearLocation = (req, res, next) => {
         prods: products,
         pageTitle: 'All Products',
         path: '/products',
+        baascoin: b,
         currentPage: page,
         hasNextPage: ITEMS_PER_PAGE * page < totalItems,
         hasPreviousPage: page > 1,
@@ -68,13 +82,20 @@ exports.getProductsNearLocation = (req, res, next) => {
 
 
 exports.getProduct = (req, res, next) => {
+  let b;
+  if (req.session.user == undefined) {
+    b = "";
+  } else {
+    b = req.session.user.baascoin;
+  }
   const prodId = req.params.productId;
   productModel.findById(prodId)
     .then(product => {
       res.render('shop/product-detail', {
         product: product,
         pageTitle: product.title,
-        path: '/products'
+        path: '/products',
+        baascoin: b
       });
     })
     .catch(err => {
@@ -85,6 +106,12 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
+  let b;
+  if (req.session.user == undefined) {
+    b = "";
+  } else {
+    b = req.session.user.baascoin;
+  }
   const page = +req.query.page || 1;
   const ITEMS_PER_PAGE = 2;
   let totalItems;
@@ -98,6 +125,7 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: 'Shop',
         path: '/',
+        baascoin: b,
         currentPage: page,
         hasNextPage: ITEMS_PER_PAGE * page < totalItems,
         hasPreviousPage: page > 1,
@@ -114,13 +142,20 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
+  let b;
+  if (req.session.user == undefined) {
+    b = "";
+  } else {
+    b = req.session.user.baascoin;
+  }
   const userId = req.session.user._id;
   userModel.getCart(userId, req.session.user.name)
     .then(products => {
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
-        products: products
+        products: products,
+        baascoin: b
       });
     })
     .catch(err => {
@@ -163,6 +198,20 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.getCheckout = (req, res, next) => {
+  let message = req.flash('error');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+
+  let b;
+  if (req.session.user == undefined) {
+    b = "";
+  } else {
+    b = req.session.user.baascoin;
+  }
+
   let cartProducts;
   let total = 0;
   const userId = req.session.user._id;
@@ -192,10 +241,35 @@ exports.getCheckout = (req, res, next) => {
       res.render('shop/checkout', {
         path: '/checkout',
         pageTitle: 'Your Cart',
+        baascoin: b,
+        errorMessage: message,
         products: cartProducts,
         totalSum: total,
         sessionId: session.id
       });
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+}
+
+exports.postCheckout = (req, res, next) => {
+  const totalCheckoutAmount = parseFloat(req.body.totalCheckouAmount);
+  const baascoin = req.body.baascoin;
+  const updatedBaascoin = req.session.user.baascoin - totalCheckoutAmount;
+
+  if (baascoin < totalCheckoutAmount) {
+    req.flash('error', 'You do not have enough coin');
+    return res.redirect('/checkout');
+  }
+  userModel.addOrder(req.session.user._id, req.session.user.email)
+    .then(result => {
+      const userEmail = req.session.user.email;
+      userModel.updateBaasCoin(userEmail, updatedBaascoin);
+      req.session.user.baascoin = updatedBaascoin;
+      res.redirect('/orders');
     })
     .catch(err => {
       const error = new Error(err);
@@ -229,12 +303,19 @@ exports.getCheckoutSuccess = (req, res, next) => {
 // };
 
 exports.getOrders = (req, res, next) => {
+  let b;
+  if (req.session.user == undefined) {
+    b = "";
+  } else {
+    b = req.session.user.baascoin;
+  }
   userModel.getOrders(req.session.user._id)
     .then(orders => {
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',
-        orders: orders
+        orders: orders,
+        baascoin: b
       });
     })
     .catch(err => {

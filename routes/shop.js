@@ -21,6 +21,8 @@ router.post('/cart-delete-item', isAuth.isLoggedIn, isAuth.canAccessCustomerPage
 
 router.get('/checkout', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.getCheckout);
 
+router.post('/checkout_wallet', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.postCheckout);
+
 router.get('/checkout/success', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.getCheckoutSuccess);
 
 router.get('/checkout/cancel', isAuth.isLoggedIn, isAuth.canAccessCustomerPage, shopController.getCheckout);

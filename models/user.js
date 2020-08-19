@@ -5,7 +5,7 @@ const getDb = require('../util/database').getDb;
 exports.signup = (email, hashedPassword, isHotelOwner, intialCart) => {
   const db = getDb();
   return db.collection('users')
-    .insertOne({ email: email, password: hashedPassword, isHotelOwner: isHotelOwner, cart: intialCart });
+    .insertOne({ email: email, password: hashedPassword, isHotelOwner: isHotelOwner, baascoin: 1000, cart: intialCart });
 }
 
 exports.findById = (userId) => {
@@ -160,4 +160,13 @@ exports.findOrderById = (orderId) => {
   return db.collection('orders')
     .find({ _id: new mongodb.ObjectId(orderId) })
     .next()
+}
+
+exports.updateBaasCoin = (userEmail, updatedBaascoin) => {
+  console.log('updataed baass')
+  const db = getDb();
+  db.collection('users').updateOne(
+    { email: userEmail },
+    { $set: { baascoin: updatedBaascoin } }
+  );
 }

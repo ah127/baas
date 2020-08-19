@@ -13,7 +13,6 @@ exports.canAccessHotelAdmin = (req, res, next) => {
 }
 
 exports.canAccessCustomerPage = (req, res, next) => {
-
     if (req.session.isHotelOwner) {
         return res.send('Hotel owner cannot access this page');
     }

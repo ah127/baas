@@ -5,11 +5,14 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
         <main>
+            <% if (errorMessage) { %>
+                <div class="user-message user-message--error"><%= errorMessage %> </div>
+            <% } %>
             <ul class="cart__item-list">
                 <% products.forEach(p => { %>
                     <li class="cart__item">
                         <h1><%= p.title %></h1>
-                        <h2>Quantity: <%= p.quantity %></h2>
+                        <h2>Nights: <%= p.quantity %></h2>
                     </li>
                 <% }) %>
             </ul>
@@ -17,7 +20,16 @@
                 <h2>Total :<%= totalSum %> </h2>
             </div>
             <div class="centered">
-                <button id="order-btn" class="btn">CONFORM BOOKING</button>
+                <button id="order-btn" class="btn">Pay With Card</button>
+                <br>
+                <br>
+                <form action="/checkout_wallet" method="POST">
+                    <input type="hidden" name="totalCheckouAmount" value="<%= totalSum%>">
+                    <input type="hidden" name="baascoin" value="<%= baascoin%>">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="submit" value="Pay With Baascoin" class="btn">
+                </form>
+                
                 <script src="https://js.stripe.com/v3/"></script>
                 <script>
                     var stripe = Stripe('pk_test_51H2XT0EKb6anIrL5k3pT3ni8RSEDDdAevfraW704A49XAc4MSF6X47svlZ5n7zw1Yl9BCPP9P61iDK3pyzOlm1hP00GoHA79QH');

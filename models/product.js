@@ -99,3 +99,21 @@ exports.countTotalProducts = () => {
     .find()
     .count();
 }
+
+exports.countTotalNearProducts = (longitude, latitude) => {
+  const db = getDb();
+  return db
+    .collection('products')
+    .find({
+      "location": {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [longitude, latitude]
+          },
+          $maxDistance: 10000
+        }
+      }
+    })
+    .count()
+}
