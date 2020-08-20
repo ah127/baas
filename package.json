@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:tdd": "mocha tests/tdd/*.js"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,9 @@
     "stripe": "^8.69.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "chai": "^4.2.0",
+    "mocha": "^8.1.1",
+    "nodemon": "^2.0.4",
+    "sinon": "^9.0.3"
   }
 }

@@ -163,7 +163,6 @@ exports.findOrderById = (orderId) => {
 }
 
 exports.updateBaasCoin = (userEmail, updatedBaascoin) => {
-  console.log('updataed baass')
   const db = getDb();
   db.collection('users').updateOne(
     { email: userEmail },
