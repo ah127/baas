@@ -13,7 +13,7 @@ exports.getAddProduct = (req, res, next) => {
   });
 };
 
-exports.postAddProduct = (req, res, next) => {
+exports.postAddProduct = async (req, res, next) => {
   const title = req.body.title;
   const image = req.file;
   const price = req.body.price;
@@ -62,16 +62,17 @@ exports.postAddProduct = (req, res, next) => {
   }
 
   const imageUrl = image.path;
+  try {
+    await productModel.save(title, imageUrl, price, description, userId, latitude, longitude);
+    res.redirect('/admin/products');
+  }
+  catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    next(error);
+    return error;
+  }
 
-  productModel.save(title, imageUrl, price, description, userId, latitude, longitude)
-    .then(result => {
-      res.redirect('/admin/products');
-    })
-    .catch(err => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
-    })
 };
 
 exports.getEditProduct = (req, res, next) => {

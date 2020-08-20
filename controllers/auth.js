@@ -106,7 +106,7 @@ exports.getLogin = (req, res, next) => {
     });
 }
 
-exports.postLogin = (req, res, next) => {
+exports.postLogin = async (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     const errors = validationResult(req);
@@ -122,50 +122,51 @@ exports.postLogin = (req, res, next) => {
             validationErrors: errors.array()
         });
     }
-    userModel.findByEmail(email)
-        .then(user => {
-            if (!user) {
-                return res.status(422).render('auth/login', {
-                    pageTitle: 'Login',
-                    path: '/login',
-                    errorMessage: 'Username or Password is incorrect',
-                    oldInput: {
-                        email: email,
-                        password: password
-                    },
-                    validationErrors: []
-                });
+    try {
+        const user = await userModel.findByEmail(email)
+
+        if (!user) {
+            return res.status(422).render('auth/login', {
+                pageTitle: 'Login',
+                path: '/login',
+                errorMessage: 'Username or Password is incorrect',
+                oldInput: {
+                    email: email,
+                    password: password
+                },
+                validationErrors: []
+            });
+        }
+        const doMatch = await bcrypt.compare(password, user.password)
+
+        if (doMatch) {
+            req.session.user = user;
+            req.session.isLoggedIn = true;
+            if (user.isHotelOwner) {
+                req.session.isHotelOwner = true;
             }
-            bcrypt.compare(password, user.password)
-                .then(doMatch => {
-                    if (doMatch) {
-                        req.session.user = user;
-                        req.session.isLoggedIn = true;
-                        if (user.isHotelOwner) {
-                            req.session.isHotelOwner = true;
-                        }
-                        return req.session.save(err => {
-                            if (err) { console.log(err) };
-                            res.redirect('/');
-                        })
-                    }
-                    return res.status(422).render('auth/login', {
-                        pageTitle: 'Login',
-                        path: '/login',
-                        errorMessage: 'Username or Password is incorrect',
-                        oldInput: {
-                            email: email,
-                            password: password
-                        },
-                        validationErrors: []
-                    });
-                });
-        })
-        .catch(err => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
+            return req.session.save(err => {
+                if (err) { console.log(err) };
+                res.redirect('/');
+            })
+        }
+        return res.status(422).render('auth/login', {
+            pageTitle: 'Login',
+            path: '/login',
+            errorMessage: 'Username or Password is incorrect',
+            oldInput: {
+                email: email,
+                password: password
+            },
+            validationErrors: []
         });
+    }
+    catch (err) {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        next(error);
+        return error;
+    }
 }
 
 exports.postLogout = (req, res, next) => {
